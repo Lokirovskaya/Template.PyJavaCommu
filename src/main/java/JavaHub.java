@@ -1,3 +1,4 @@
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.BufferedReader;
@@ -19,8 +20,32 @@ public class JavaHub {
         return mapper.readValue(rawJSON, mapper.getTypeFactory().constructCollectionType(List.class, cls));
     }
 
-    public void send(Object obj) throws IOException {
-        String rawJSON = mapper.writeValueAsString(obj);
-        System.out.println(rawJSON);
+    private static class Response {
+        public final boolean error = false;
+        public Object data;
+    }
+
+    private static class Error {
+        public final boolean error = true;
+        public String message;
+    }
+
+    public void sendResponse(Object obj) throws IOException {
+        Response response = new Response();
+        response.data = obj;
+        String responseJSON = mapper.writeValueAsString(response);
+        System.out.println(responseJSON);
+    }
+
+    public void sendError(String message)  {
+        Error error = new Error();
+        error.message = message;
+        String errorJSON;
+        try {
+            errorJSON = mapper.writeValueAsString(error);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(errorJSON);
     }
 }
