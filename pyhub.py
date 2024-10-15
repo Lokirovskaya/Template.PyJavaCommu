@@ -1,7 +1,4 @@
-try:
-    import ujson as json
-except ImportError:
-    import json
+import ujson
 import subprocess as sp
 
 
@@ -11,15 +8,20 @@ class PyHub:
             cmd,
             stdin=sp.PIPE,
             stdout=sp.PIPE,
+            stderr=sp.STDOUT,
             shell=True,
         )
 
     def receive(self):
         raw_json = self.process.stdout.readline()
-        return json.loads(raw_json)
+        try:
+            obj = ujson.loads(raw_json)
+        except ujson.JSONDecodeError:
+            print(f"Corrupted JSON: {raw_json}")
+        return obj
 
     def send(self, obj):
-        obj_json = json.dumps(obj, separators=(",", ":")) + "\n"
+        obj_json = ujson.dumps(obj) + "\n"
         self.process.stdin.write(bytes(obj_json, "utf-8"))
         self.process.stdin.flush()
 
