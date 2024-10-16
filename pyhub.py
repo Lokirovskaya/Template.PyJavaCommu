@@ -11,6 +11,12 @@ class PyHub:
             stderr=sp.STDOUT,
             shell=True,
         )
+        
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, *args):
+        self.close()
 
     def receive(self):
         raw_json = self.process.stdout.readline()
@@ -26,4 +32,4 @@ class PyHub:
         self.process.stdin.flush()
 
     def close(self):
-        self.process.kill()
+        self.process.terminate()
