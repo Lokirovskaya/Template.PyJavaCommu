@@ -51,9 +51,8 @@ public class JavaHub {
     public void sendError(String message) {
         Error error = new Error();
         error.message = message;
-        String errorJSON;
         try {
-            errorJSON = mapper.writeValueAsString(error);
+            String errorJSON = mapper.writeValueAsString(error);
             System.out.println(errorJSON);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
