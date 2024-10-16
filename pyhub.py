@@ -8,7 +8,6 @@ class PyHub:
             cmd,
             stdin=sp.PIPE,
             stdout=sp.PIPE,
-            stderr=sp.STDOUT,
             shell=True,
         )
         
